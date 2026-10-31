@@ -5,9 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi perfil - Reporte Ciudadano</title>
-    <link rel="stylesheet" href="/assets/css/profile.css">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <link rel="stylesheet" href="/assets/css/session-ui.css">
+    <link rel="stylesheet" href="../assets/css/profile.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/session-ui.css">
+    <!-- Sesión con JWT: si no hay token vigente redirige a login.html -->
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/guard.js"></script>
 </head>
 
 <body>
@@ -47,28 +51,39 @@
                         <input type="email" id="email" name="email" required>
                     </div>
 
+                    <div class="profile-field">
+                        <label for="telefono">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono">
+                    </div>
+
+                    <div class="profile-field">
+                        <label for="fecha_nacimiento">Fecha de nacimiento</label>
+                        <input type="date" id="fecha_nacimiento" name="fechaNacimiento">
+                    </div>
+
                     <div class="profile-field profile-full">
+                        <label for="direccion">Dirección</label>
+                        <input type="text" id="direccion" name="direccion">
+                    </div>
+
+                    <div class="profile-field">
+                        <label for="provincia_id">Provincia</label>
+                        <select id="provincia_id" name="idProvincia" required>
+                            <option value="">Cargando...</option>
+                        </select>
+                    </div>
+
+                    <div class="profile-field">
                         <label for="departamento_id">Departamento</label>
-                        <select id="departamento_id" name="departamento_id" required>
+                        <select id="departamento_id" name="idDepartamento" required disabled>
                             <option value="">Seleccioná tu departamento</option>
-                            <option value="1">Capital</option>
-                            <option value="2">General Alvear</option>
-                            <option value="3">Godoy Cruz</option>
-                            <option value="4">Guaymallén</option>
-                            <option value="5">Junín</option>
-                            <option value="6">La Paz</option>
-                            <option value="7">Las Heras</option>
-                            <option value="8">Lavalle</option>
-                            <option value="9">Luján de Cuyo</option>
-                            <option value="10">Maipú</option>
-                            <option value="11">Malargüe</option>
-                            <option value="12">Rivadavia</option>
-                            <option value="13">San Carlos</option>
-                            <option value="14">San Martín</option>
-                            <option value="15">San Rafael</option>
-                            <option value="16">Santa Rosa</option>
-                            <option value="17">Tunuyán</option>
-                            <option value="18">Tupungato</option>
+                        </select>
+                    </div>
+
+                    <div class="profile-field profile-full">
+                        <label for="localidad_id">Localidad</label>
+                        <select id="localidad_id" name="idLocalidad" required disabled>
+                            <option value="">Seleccioná tu localidad</option>
                         </select>
                     </div>
 
@@ -141,8 +156,8 @@
             <section class="delete-account">
                 <h2>Eliminar cuenta</h2>
                 <p>
-                    Esta acción elimina tu cuenta y no se puede deshacer.
-                    Los reportes asociados podrían impedir la eliminación.
+                    Esta acción desactiva tu cuenta: ya no vas a poder iniciar sesión
+                    con ella. Tus reportes se conservan.
                 </p>
 
                 <button type="button" id="delete-account-button"
@@ -153,10 +168,11 @@
         </section>
     </main>
 
-    <script src="/js/header.js"></script>
-    <script src="/js/session-ui.js"></script>
-    <script src="/js/profile.js"></script>
-    <script src="/js/password-modal.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/session-ui.js"></script>
+    <script src="../js/ubicaciones.js"></script>
+    <script src="../js/profile.js"></script>
+    <script src="../js/password-modal.js"></script>
 
 </body>
 </html>

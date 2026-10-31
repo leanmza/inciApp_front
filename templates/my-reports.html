@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Incidentes - Reporte Ciudadano</title>
-    <link rel="stylesheet" href="/assets/css/my-reports.css">
-    <link rel="stylesheet" href="/assets/css/session-ui.css">
+    <link rel="stylesheet" href="../assets/css/my-reports.css">
+    <link rel="stylesheet" href="../assets/css/session-ui.css">
+    <!-- Sesión con JWT: si no hay token vigente redirige a login.html -->
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/guard.js"></script>
 </head>
 
 <body class="my-reports-page">
@@ -23,16 +27,16 @@
                 <p class="page-main-subtitle">Seguimiento en tiempo real de tus reclamos reportados</p>
             </div>
             <div class="header-stats">
-                <span class="counter-text"><strong>3</strong> solicitudes registradas</span>
+                <span id="reports-counter" class="counter-text"></span>
             </div>
         </section>
 
         <!-- Barra de Filtros y Búsqueda -->
         <section class="reports-filter-bar">
             <div class="filter-tabs-group">
-                <button type="button" class="tab-btn active">Todos los reportes</button>
-                <button type="button" class="tab-btn">Solo activos</button>
-                <button type="button" class="tab-btn">Finalizados</button>
+                <button type="button" class="tab-btn active" data-filtro="todos">Todos los reportes</button>
+                <button type="button" class="tab-btn" data-filtro="activos">Solo activos</button>
+                <button type="button" class="tab-btn" data-filtro="finalizados">Finalizados</button>
             </div>
             <div class="search-input-wrapper">
                 <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
@@ -40,169 +44,15 @@
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
-                <input type="text" class="search-field" placeholder="Buscar por código, calle o tema...">
+                <input type="search" id="reports-search" class="search-field" aria-label="Buscar incidentes" placeholder="Buscar por código, calle o tema...">
             </div>
         </section>
 
-        <!-- Lista de Incidentes -->
+        <!-- Lista de Incidentes (la carga js/my-reports.js desde /api/incidentes/user/me) -->
         <section class="user-reports-list">
-            <div class="incidents-list">
-
-                <!-- TARJETA 1 (Activo) -->
-                <article class="incident-card">
-                    <div class="card-media">
-                        <span class="incident-id-badge">#REP-84920</span>
-                        <img class="incident-image" src="/assets/img/camara.png" alt="Tapas de alcantarilla rotas">
-                    </div>
-
-                    <div class="card-body">
-                        <div class="card-header-meta">
-                            <div class="badge-group">
-                                <span class="badge badge-low-severity">Infraestructura Vial</span>
-                                <span class="badge badge-status-active">Activo</span>
-                            </div>
-                            <time class="meta-time">Hoy, 09:15 hs</time>
-                        </div>
-
-                        <h2 class="card-title">Tapas de alcantarilla rotas</h2>
-                        <div class="card-location">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Centro, Calle Belgrano 120</span>
-                        </div>
-
-                        <p class="card-description">
-                            Reclamo registrado correctamente en el sistema. Pendiente de asignación de cuadrilla.
-                        </p>
-
-                        <div class="card-footer">
-                            <div class="anon-vote-info">
-                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                </svg>
-                                <span>1. Recibido</span>
-                            </div>
-
-                            <div class="my-report-actions">
-                                <button type="button" class="btn-edit-card" aria-label="Editar reporte">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                                        stroke-width="2">
-                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                    </svg>
-                                </button>
-                                <a class="card-action-link btn-details-fill" href="report-details.html">Detalles 🡪</a>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- TARJETA 2 (En cuadrilla) -->
-                <article class="incident-card">
-                    <div class="card-media">
-                        <span class="incident-id-badge">#REP-84883</span>
-                        <img class="incident-image" src="/assets/img/camara.png" alt="Falta de alumbrado público">
-                    </div>
-
-                    <div class="card-body">
-                        <div class="card-header-meta">
-                            <div class="badge-group">
-                                <span class="badge badge-medium-severity">Alumbrado Público</span>
-                                <span class="badge badge-status-cuadrilla">En Cuadrilla</span>
-                            </div>
-                            <time class="meta-time">Ayer, 18:30 hs</time>
-                        </div>
-
-                        <h2 class="card-title">Falta de alumbrado público</h2>
-                        <div class="card-location">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Barrio Norte, Los Olivos 840</span>
-                        </div>
-
-                        <p class="card-description">
-                            Cuadrilla #2 asignada al sector para revisión técnica y recambio de luminarias.
-                        </p>
-
-                        <div class="card-footer">
-                            <div class="anon-vote-info">
-                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                </svg>
-                                <span>2. En Cuadrilla</span>
-                            </div>
-
-                            <div class="my-report-actions">
-                                <button type="button" class="btn-edit-card" aria-label="Editar reporte">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                                        stroke-width="2">
-                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                    </svg>
-                                </button>
-                                <a class="card-action-link btn-details-fill" href="report-details.html">Seguimiento 🡪</a>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- TARJETA 3 (Resuelto) -->
-                <article class="incident-card">
-                    <div class="card-media">
-                        <span class="incident-id-badge">#REP-84512</span>
-                        <img class="incident-image" src="/assets/img/camara.png" alt="Ramas y árboles caídos">
-                    </div>
-
-                    <div class="card-body">
-                        <div class="card-header-meta">
-                            <div class="badge-group">
-                                <span class="badge badge-low-severity">Espacios Verdes</span>
-                                <span class="badge badge-status-resolved">Resuelto ✓</span>
-                            </div>
-                            <time class="meta-time">Resuelto el 11/10/2024</time>
-                        </div>
-
-                        <h2 class="card-title">Ramas y árboles caídos</h2>
-                        <div class="card-location">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Barrio Jardín, Av. San Martín</span>
-                        </div>
-
-                        <p class="card-description">
-                            Trabajos de despeje y recolección finalizados con éxito por el área de arbolado público.
-                        </p>
-
-                        <div class="card-footer">
-                            <div class="anon-vote-info voted">
-                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                </svg>
-                                <span>3. Resuelto</span>
-                            </div>
-
-                            <div class="my-report-actions">
-                                <a class="card-action-link" href="report-details.html">Ver acta ↗</a>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
+            <p id="reports-message" class="reports-message" role="alert" hidden></p>
+            <div id="incidents-list" class="incidents-list" aria-live="polite">
+                <p class="reports-empty">Cargando tus incidentes...</p>
             </div>
         </section>
 
@@ -210,9 +60,9 @@
 
     <footer></footer>
 
-    <link rel="stylesheet" href="/assets/css/session-ui.css">
-    <script src="/js/header.js"></script>
-    <script src="/js/session-ui.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/session-ui.js"></script>
+    <script src="../js/my-reports.js"></script>
 
 </body>
 

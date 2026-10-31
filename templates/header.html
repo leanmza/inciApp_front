@@ -1,7 +1,9 @@
+<!-- Los href están escritos desde la raíz del front (index.html, templates/...).
+     header.js les agrega "../" cuando la página actual está dentro de templates/. -->
 <header class="main-header" id="main-header">
 
     <!-- Logo -->
-    <a class="brand-logo" href="/index.html"
+    <a class="brand-logo" href="index.html"
        aria-label="Reporte Ciudadano - Inicio">
 
         <svg class="brand-icon"
@@ -34,15 +36,15 @@
         <ul class="nav-list">
             <li class="nav-item nav-item-home">
                 <a class="nav-link" id="nav-home-link"
-                   href="/index.html">Inicio</a>
+                   href="index.html">Inicio</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" data-auth="user" hidden>
                 <a class="nav-link" id="nav-reports-link"
-                   href="/my-reports.html">Reportes</a>
+                   href="templates/my-reports.html">Reportes</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="nav-contact-link"
-                   href="/contact.html">Contacto</a>
+                   href="templates/contact.html">Contacto</a>
             </li>
         </ul>
     </nav>
@@ -50,10 +52,34 @@
     <!-- Accesos del usuario -->
     <div class="user-menu" id="user-menu">
 
-        <div class="user-action-item" id="notifications-menu-item">
+        <!-- Solo visitantes sin sesión -->
+        <div class="user-action-item" id="login-menu-item" data-auth="guest">
+            <a class="action-link profile-link"
+               id="login-btn"
+               href="templates/login.html"
+               aria-label="Iniciar sesión o registrarse">
+                <svg class="action-icon"
+                     xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 48 48"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="3"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     aria-hidden="true">
+                    <path d="M20 8h16a4 4 0 0 1 4 4v24a4 4 0 0 1-4 4H20"/>
+                    <polyline points="24 16 32 24 24 32"/>
+                    <line x1="8" y1="24" x2="32" y2="24"/>
+                </svg>
+                <span class="action-label">Ingresar</span>
+            </a>
+        </div>
+
+        <!-- Solo usuarios logueados -->
+        <div class="user-action-item" id="notifications-menu-item" data-auth="user" hidden>
             <a class="action-link notification-link"
                id="notification-btn"
-               href="/notifications.html"
+               href="templates/notifications.html"
                aria-label="Ver notificaciones">
                 <svg class="action-icon"
                      xmlns="http://www.w3.org/2000/svg"
@@ -71,10 +97,10 @@
             </a>
         </div>
 
-        <div class="user-action-item" id="profile-menu-item">
+        <div class="user-action-item" id="profile-menu-item" data-auth="user" hidden>
             <a class="action-link profile-link"
                id="profile-btn"
-               href="/profile.html"
+               href="templates/profile.html"
                aria-label="Ver perfil de usuario">
                 <svg class="action-icon"
                      xmlns="http://www.w3.org/2000/svg"

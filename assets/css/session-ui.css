@@ -1,3 +1,9 @@
+/* El atributo hidden siempre oculta (lo usa header.js para mostrar/ocultar
+   opciones según la sesión, aunque otra regla defina display) */
+[hidden] {
+    display: none !important;
+}
+
 .logout-floating-form {
     position: fixed;
     right: 25px;
@@ -22,4 +28,96 @@
 .logout-floating-button:hover {
     background-color: #b02a37;
     transform: translateY(-2px);
+}
+
+/* Ventana de confirmación de cierre de sesión */
+.logout-confirm-modal[hidden] {
+    display: none;
+}
+
+.logout-confirm-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000; /* por encima del botón flotante (9999) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.logout-confirm-content {
+    width: 100%;
+    max-width: 400px;
+    padding: 28px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    text-align: center;
+}
+
+.logout-confirm-content h2 {
+    margin-top: 0;
+    color: #1f2937;
+}
+
+.logout-confirm-content p {
+    margin-bottom: 24px;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.logout-confirm-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.logout-confirm-buttons button {
+    padding: 11px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#confirm-logout {
+    background: #dc2626;
+    color: #fff;
+}
+
+#confirm-logout:hover {
+    background: #b91c1c;
+}
+
+#cancel-logout {
+    background: #e5e7eb;
+    color: #1f2937;
+}
+
+#cancel-logout:hover {
+    background: #d1d5db;
+}
+
+@media (max-width: 480px) {
+    .logout-confirm-buttons {
+        flex-direction: column;
+    }
+
+    .logout-confirm-buttons button {
+        width: 100%;
+    }
+}
+
+.logout-confirm-modal {
+    box-sizing: border-box;
+}
+
+.logout-confirm-content {
+    box-sizing: border-box;
+}
+
+.logout-confirm-buttons button {
+    min-height: 44px;
 }

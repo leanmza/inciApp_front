@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles del Reporte - Reporte Ciudadano</title>
-    <link rel="stylesheet" href="/assets/css/report-details.css">
-    <link rel="stylesheet" href="/assets/css/session-ui.css">
+    <link rel="stylesheet" href="../assets/css/report-details.css">
+    <link rel="stylesheet" href="../assets/css/session-ui.css">
+    <!-- Sesión con JWT: si no hay token vigente redirige a login.html -->
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/guard.js"></script>
 </head>
 
 <body class="details-page">
@@ -99,7 +103,7 @@
             <section class="evidence-section">
                 <h2 class="section-block-title">EVIDENCIA FOTOGRÁFICA</h2>
                 <div class="photo-container">
-                    <img class="evidence-photo" src="/assets/img/camara.png" alt="Evidencia de tapas de alcantarilla rotas">
+                    <img class="evidence-photo" src="../assets/img/camara.png" alt="Evidencia de tapas de alcantarilla rotas">
                     <span class="photo-location-overlay">Belgrano 120 • 09:15 hs</span>
                 </div>
             </section>
@@ -118,8 +122,8 @@
 
     <footer></footer>
 
-    <script src="/js/header.js"></script>
-    <script src="/js/session-ui.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/session-ui.js"></script>
 
 </body>
 

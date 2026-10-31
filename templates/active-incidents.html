@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Incidentes Activos - Reporte Ciudadano</title>
-    <link rel="stylesheet" href="/assets/css/active-incidents.css">
-    <link rel="stylesheet" href="/assets/css/session-ui.css">
+    <link rel="stylesheet" href="../assets/css/active-incidents.css">
+    <link rel="stylesheet" href="../assets/css/session-ui.css">
+    <!-- Sesión con JWT: si no hay token vigente redirige a login.html -->
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/guard.js"></script>
 </head>
 
 <body>
@@ -80,7 +84,7 @@
                 <article class="incident-card">
                     <div class="card-media">
                         <span class="incident-id-badge">#94812</span>
-                        <img class="incident-image" src="/assets/img/camara.png" alt="Cables y postes caídos">
+                        <img class="incident-image" src="../assets/img/camara.png" alt="Cables y postes caídos">
                     </div>
 
                     <div class="card-body">
@@ -124,7 +128,7 @@
                 <article class="incident-card">
                     <div class="card-media">
                         <span class="incident-id-badge">#94765</span>
-                        <img class="incident-image" src="/assets/img/camara.png" alt="Bache en calzada principal">
+                        <img class="incident-image" src="../assets/img/camara.png" alt="Bache en calzada principal">
                     </div>
 
                     <div class="card-body">
@@ -168,7 +172,7 @@
                 <article class="incident-card">
                     <div class="card-media">
                         <span class="incident-id-badge">#94690</span>
-                        <img class="incident-image" src="/assets/img/camara.png" alt="Falta de alumbrado público">
+                        <img class="incident-image" src="../assets/img/camara.png" alt="Falta de alumbrado público">
                     </div>
 
                     <div class="card-body">
@@ -224,8 +228,8 @@
 
     <footer></footer>
 
-    <script src="/js/header.js"></script>
-    <script src="/js/session-ui.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/session-ui.js"></script>
 
 </body>
 
