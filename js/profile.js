@@ -1,7 +1,20 @@
+// ========================================
+// MI PERFIL  ->  /api/users/me (Spring, con JWT)
+// ========================================
+//   GET    /api/users/me   datos del usuario logueado
+//   PUT    /api/users/me   modificar datos
+//   DELETE /api/users/me   desactivar la cuenta (soft delete)
+
 document.addEventListener('DOMContentLoaded', () => {
     const formulario = document.getElementById('profile-form');
     const mensaje = document.getElementById('profile-message');
     const botonEliminar = document.getElementById('delete-account-button');
+
+    const selects = {
+        provincia: document.getElementById('provincia_id'),
+        departamento: document.getElementById('departamento_id'),
+        localidad: document.getElementById('localidad_id')
+    };
 
     const mostrarMensaje = (texto, tipo) => {
         mensaje.textContent = texto;
@@ -14,42 +27,35 @@ document.addEventListener('DOMContentLoaded', () => {
         mensaje.hidden = true;
     };
 
+    // "AAAA-MM-DD" -> "DD/MM/AAAA" sin problemas de zona horaria
+    const formatearFecha = (iso) => {
+        if (!iso) return 'No disponible';
+        const [anio, mes, dia] = String(iso).split('-');
+        return dia && mes && anio ? `${dia}/${mes}/${anio}` : iso;
+    };
+
     // Cargar los datos de la cuenta
     const cargarPerfil = async () => {
         try {
-            const respuesta = await fetch('/api/profile', {
-                cache: 'no-store'
-            });
+            // Si el token venció, apiFetch redirige al login
+            const datos = await Auth.apiFetch('/api/users/me', { cache: 'no-store' });
 
-            const datos = await respuesta.json();
-
-            if (respuesta.status === 401) {
-                window.location.href = '/login';
-                return;
-            }
-
-            if (!respuesta.ok) {
-                throw new Error(datos.mensaje || 'No se pudo cargar el perfil.');
-            }
-
-            formulario.elements.nombre.value = datos.nombre || '';
-            formulario.elements.apellido.value = datos.apellido || '';
+            formulario.elements.nombre.value = datos.name || '';
+            formulario.elements.apellido.value = datos.lastname || '';
             formulario.elements.dni.value = datos.dni || '';
             formulario.elements.email.value = datos.email || '';
-            formulario.elements.departamento_id.value =
-                datos.departamento_id || '';
+            formulario.elements.telefono.value = datos.telefono || '';
+            formulario.elements.direccion.value = datos.direccion || '';
+            formulario.elements.fechaNacimiento.value = datos.fechaNacimiento || '';
 
-            const fecha = document.getElementById('fecha_registro');
+            document.getElementById('fecha_registro').value =
+                formatearFecha(datos.fechaRegistro);
 
-            if (datos.fecha_registro) {
-                const fechaRegistro = new Date(datos.fecha_registro);
-
-                fecha.value = Number.isNaN(fechaRegistro.getTime())
-                    ? ''
-                    : fechaRegistro.toLocaleDateString('es-AR');
-            } else {
-                fecha.value = 'No disponible';
-            }
+            await Ubicaciones.iniciar(selects, {
+                idProvincia: datos.provincia && datos.provincia.id,
+                idDepartamento: datos.departamento && datos.departamento.id,
+                idLocalidad: datos.localidad && datos.localidad.id
+            });
 
         } catch (error) {
             mostrarMensaje(error.message, 'error');
@@ -61,212 +67,71 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         ocultarMensaje();
 
-        const botonGuardar = formulario.querySelector(
-            'button[type="submit"]'
-        );
-
+        const botonGuardar = formulario.querySelector('button[type="submit"]');
         botonGuardar.disabled = true;
 
         try {
+            const f = formulario.elements;
+
+            // Mismo formato que UsuarioUpdateRequestDTO del back
             const datos = {
-                nombre: formulario.elements.nombre.value,
-                apellido: formulario.elements.apellido.value,
-                dni: formulario.elements.dni.value,
-                email: formulario.elements.email.value,
-                departamento_id: formulario.elements.departamento_id.value
+                name: f.nombre.value.trim(),
+                lastname: f.apellido.value.trim(),
+                dni: f.dni.value.trim(),
+                email: f.email.value.trim().toLowerCase(),
+                telefono: f.telefono.value.trim(),
+                direccion: f.direccion.value.trim(),
+                fechaNacimiento: f.fechaNacimiento.value || null,
+                idProvincia: Number(f.idProvincia.value) || null,
+                idDepartamento: Number(f.idDepartamento.value) || null,
+                idLocalidad: Number(f.idLocalidad.value) || null
             };
 
-            const respuesta = await fetch('/api/profile', {
+            await Auth.apiFetch('/api/users/me', {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(datos)
+                body: datos
             });
 
-            const resultado = await respuesta.json();
-
-            if (respuesta.status === 401) {
-                window.location.href = '/login';
-                return;
-            }
-
-            if (!respuesta.ok) {
-                throw new Error(
-                    resultado.mensaje || 'No se pudieron guardar los cambios.'
-                );
-            }
-
-            mostrarMensaje(resultado.mensaje, 'success');
+            mostrarMensaje('Tus datos se actualizaron correctamente.', 'success');
 
         } catch (error) {
-            mostrarMensaje(error.message, 'error');
+            mostrarMensaje(error.message || 'No se pudieron guardar los cambios.', 'error');
         } finally {
             botonGuardar.disabled = false;
         }
     });
 
-    // Eliminar la cuenta con confirmación
-    
-    // =========================================
-    // VENTANAS FLOTANTES PARA ELIMINAR LA CUENTA
-    // =========================================
-
-    function mostrarVentanaConfirmacion(titulo, texto, textoAceptar) {
-        return new Promise((resolve) => {
-            const modal = document.createElement('div');
-            modal.className = 'delete-confirm-modal';
-
-            modal.innerHTML = `
-                <div class="delete-confirm-content"
-                     role="dialog"
-                     aria-modal="true"
-                     aria-labelledby="delete-confirm-title">
-
-                    <h2 id="delete-confirm-title"></h2>
-                    <p class="delete-confirm-text"></p>
-
-                    <div class="delete-confirm-buttons">
-                        <button type="button" class="delete-confirm-yes"></button>
-                        <button type="button" class="delete-confirm-no">
-                            Cancelar
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            modal.querySelector('#delete-confirm-title').textContent = titulo;
-            modal.querySelector('.delete-confirm-text').textContent = texto;
-            modal.querySelector('.delete-confirm-yes').textContent = textoAceptar;
-
-            document.body.appendChild(modal);
-
-            const botonAceptar = modal.querySelector('.delete-confirm-yes');
-            const botonCancelar = modal.querySelector('.delete-confirm-no');
-
-            let resuelto = false;
-
-            function cerrar(resultado) {
-                if (resuelto) return;
-
-                resuelto = true;
-                modal.remove();
-                resolve(resultado);
-            }
-
-            botonAceptar.addEventListener('click', () => cerrar(true));
-            botonCancelar.addEventListener('click', () => cerrar(false));
-
-            modal.addEventListener('click', (event) => {
-                if (event.target === modal) {
-                    cerrar(false);
-                }
-            });
-
-            function manejarEscape(event) {
-                if (event.key === 'Escape' && document.body.contains(modal)) {
-                    cerrar(false);
-                }
-            }
-
-            modal.addEventListener('keydown', manejarEscape);
-            document.addEventListener('keydown', manejarEscape);
-
-            botonCancelar.focus();
-        });
-    }
-
-    // Mostrar el resultado en una ventana flotante
-    
-    function mostrarResultadoEliminacion(titulo, texto) {
-        return new Promise((resolve) => {
-            const modal = document.createElement('div');
-            modal.className = 'delete-confirm-modal';
-
-            modal.innerHTML = `
-                <div class="delete-confirm-content"
-                     role="dialog"
-                     aria-modal="true"
-                     aria-labelledby="delete-result-title">
-
-                    <h2 id="delete-result-title"></h2>
-                    <p class="delete-confirm-text"></p>
-
-                    <div class="delete-confirm-buttons">
-                        <button type="button" class="delete-confirm-yes">
-                            Aceptar
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            modal.querySelector('#delete-result-title').textContent = titulo;
-            modal.querySelector('.delete-confirm-text').textContent = texto;
-
-            document.body.appendChild(modal);
-
-            const botonAceptar = modal.querySelector('.delete-confirm-yes');
-            botonAceptar.focus();
-
-            botonAceptar.addEventListener('click', () => {
-                modal.remove();
-                resolve();
-            });
-        });
-    }
-
-    // Ejecutar las dos confirmaciones antes de eliminar
+    // Eliminar (desactivar) la cuenta con confirmación
     botonEliminar.addEventListener('click', async () => {
-        const primeraConfirmacion = await mostrarVentanaConfirmacion(
-            'Eliminar cuenta',
-            '¿Estás seguro de que querés eliminar tu cuenta? Esta acción no se puede deshacer.',
-            'Sí, continuar'
+        const confirmacion = confirm(
+            '¿Estás seguro de que querés eliminar tu cuenta? Esta acción no se puede deshacer.'
         );
 
-        if (!primeraConfirmacion) return;
+        if (!confirmacion) {
+            return;
+        }
 
-        const segundaConfirmacion = await mostrarVentanaConfirmacion(
-            'Confirmación definitiva',
-            '¿Realmente querés eliminar tu cuenta de forma permanente de Reporte Ciudadano?',
-            'Eliminar definitivamente'
+        const segundaConfirmacion = confirm(
+            'Confirmá nuevamente: se eliminará tu cuenta de Reporte Ciudadano.'
         );
 
-        if (!segundaConfirmacion) return;
+        if (!segundaConfirmacion) {
+            return;
+        }
 
         ocultarMensaje();
         botonEliminar.disabled = true;
 
         try {
-            const respuesta = await fetch('/api/profile', {
+            const resultado = await Auth.apiFetch('/api/users/me', {
                 method: 'DELETE'
             });
 
-            const resultado = await respuesta.json();
-
-            if (respuesta.status === 401) {
-                window.location.href = '/login';
-                return;
-            }
-
-            if (!respuesta.ok) {
-                throw new Error(
-                    resultado.mensaje || 'No se pudo eliminar la cuenta.'
-                );
-            }
-
-            await mostrarResultadoEliminacion(
-                'Cuenta eliminada',
-                resultado.mensaje || 'Tu cuenta se eliminó correctamente.'
-            );
-
-            window.location.href = '/login';
+            alert((resultado && resultado.mensaje) || 'Tu cuenta fue eliminada correctamente.');
+            Auth.logout();
 
         } catch (error) {
-            await mostrarResultadoEliminacion(
-                'No se pudo eliminar la cuenta',
-                error.message || 'Ocurrió un error al eliminar la cuenta.'
-            );
-        } finally {
+            mostrarMensaje(error.message, 'error');
             botonEliminar.disabled = false;
         }
     });

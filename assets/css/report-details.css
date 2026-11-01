@@ -163,12 +163,53 @@
     letter-spacing: 0.05em;
 }
 
-.status-pill-gestional {
-    background-color: #fef3c7;
-    color: #b45309;
+/* Estado del reporte (la clase de color la pone js/report-details.js) */
+.status-pill {
     font-weight: 700;
     padding: 0.2rem 0.6rem;
     border-radius: 1rem;
+}
+
+.status-pill-pendiente {
+    background-color: #eff6ff;
+    color: var(--primary-color);
+}
+
+.status-pill-gestional {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+.status-pill-resuelto {
+    background-color: #f0fdf4;
+    color: var(--success-color);
+}
+
+.status-pill-cerrado {
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+.status-pill-rechazado {
+    background-color: #fef2f2;
+    color: #b91c1c;
+}
+
+/* Mensaje de carga / error */
+.details-message {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 2rem 1rem;
+    margin: 0;
+}
+
+.details-message.error {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+    color: #b91c1c;
 }
 
 .report-main-heading {
@@ -324,6 +365,38 @@
     font-weight: 700;
     padding: 0.3rem 0.6rem;
     border-radius: 0.375rem;
+}
+
+/* Miniaturas cuando el reporte tiene más de una foto */
+.photo-thumbs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+}
+
+.photo-thumb {
+    width: 4.5rem;
+    height: 4.5rem;
+    padding: 0;
+    border: 2px solid var(--card-border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.photo-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.photo-thumb:hover,
+.photo-thumb.active {
+    border-color: var(--primary-color);
 }
 
 .description-quote {

@@ -94,30 +94,17 @@ document.addEventListener('DOMContentLoaded', () => {
         saveButton.textContent = 'Guardando...';
 
         try {
-            const response = await fetch('/api/change-password', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
+            // PATCH /api/users/me/password (Spring, con JWT)
+            const data = await Auth.apiFetch('/api/users/me/password', {
+                method: 'PATCH',
+                body: {
                     currentPassword,
-                    newPassword,
-                    confirmNewPassword
-                })
+                    newPassword
+                }
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                showMessage(
-                    data.mensaje || 'No se pudo cambiar la contraseña.',
-                    'error'
-                );
-                return;
-            }
-
             showMessage(
-                data.mensaje || 'La contraseña se cambió correctamente.',
+                (data && data.mensaje) || 'La contraseña se cambió correctamente.',
                 'success'
             );
 
@@ -128,9 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 3000);
 
         } catch (error) {
-            console.error('Error al cambiar la contraseña:', error);
             showMessage(
-                'No se pudo conectar con el servidor. Intentá nuevamente.',
+                error.message || 'No se pudo cambiar la contraseña.',
                 'error'
             );
         } finally {

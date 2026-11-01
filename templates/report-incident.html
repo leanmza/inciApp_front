@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Incidente - Reporte Ciudadano</title>
-    <link rel="stylesheet" href="/assets/css/report-incident.css">
-    <link rel="stylesheet" href="/assets/css/session-ui.css">
+    <link rel="stylesheet" href="../assets/css/report-incident.css">
+    <link rel="stylesheet" href="../assets/css/session-ui.css">
+    <!-- Sesión con JWT: si no hay token vigente redirige a login.html -->
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/guard.js"></script>
 </head>
 
 <body class="report-page">
@@ -30,62 +34,47 @@
 
         <!-- Tarjeta del Formulario -->
         <section class="form-card">
-            <form class="report-form" action="" method="POST" enctype="multipart/form-data">
+            <form class="report-form" id="report-form" novalidate>
 
-                <!-- 1. Categoría del reporte -->
+                <!-- 1. Categoría del reporte: los botones se generan desde GET /api/tipos -->
                 <div class="form-step">
-                    <label class="step-label">1. CATEGORÍA DEL REPORTE <span class="required-asterisk">*</span></label>
-                    <div class="category-grid">
-                        <button type="button" class="category-btn active">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M6 3v18M18 3v18M6 12h12M6 7h12M6 17h12"></path>
-                            </svg>
-                            Vialidad
-                        </button>
-                        <button type="button" class="category-btn">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z"></path>
-                                <path d="M9 21h6"></path>
-                            </svg>
-                            Alumbrado
-                        </button>
-                        <button type="button" class="category-btn">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 19V6M12 6L8 10M12 6l4 4"></path>
-                                <path d="M12 2a7 7 0 0 0-7 7c0 4 7 10 7 10s7-6 7-10a7 7 0 0 0-7-7z"></path>
-                            </svg>
-                            Arbolado
-                        </button>
-                        <button type="button" class="category-btn">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                            </svg>
-                            Higiene Urbana
-                        </button>
-                        <button type="button" class="category-btn">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="6" y="2" width="12" height="20" rx="2"></rect>
-                                <circle cx="12" cy="6" r="2"></circle>
-                                <circle cx="12" cy="12" r="2"></circle>
-                                <circle cx="12" cy="18" r="2"></circle>
-                            </svg>
-                            Semáforos
-                        </button>
-                        <button type="button" class="category-btn">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
-                            </svg>
-                            Aguas / Fugas
-                        </button>
+                    <label class="step-label" id="category-label">1. CATEGORÍA DEL REPORTE <span class="required-asterisk">*</span></label>
+                    <div class="category-grid" id="category-grid" role="radiogroup" aria-labelledby="category-label">
+                        <span class="dropzone-subtitle">Cargando categorías...</span>
                     </div>
+                    <input type="hidden" id="incident-tipo" name="idTipo">
                 </div>
 
                 <!-- 2. Ubicación del incidente -->
                 <div class="form-step">
+                    <label class="step-label">2. UBICACIÓN DEL INCIDENTE <span class="required-asterisk">*</span></label>
+
+                    <div class="location-grid">
+                        <div class="location-field">
+                            <label class="field-label" for="incident-provincia">Provincia</label>
+                            <select class="select-input" id="incident-provincia" name="idProvincia" required>
+                                <option value="">Cargando...</option>
+                            </select>
+                        </div>
+
+                        <div class="location-field">
+                            <label class="field-label" for="incident-departamento">Departamento</label>
+                            <select class="select-input" id="incident-departamento" name="idDepartamento" required disabled>
+                                <option value="">Selecciona primero la provincia</option>
+                            </select>
+                        </div>
+
+                        <div class="location-field">
+                            <label class="field-label" for="incident-localidad">Localidad</label>
+                            <select class="select-input" id="incident-localidad" name="idLocalidad" required disabled>
+                                <option value="">Selecciona primero el departamento</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="step-label-row">
-                        <label class="step-label" for="incident-location">2. UBICACIÓN DEL INCIDENTE <span class="required-asterisk">*</span></label>
-                        <button type="button" class="gps-btn">
+                        <label class="field-label" for="incident-location">Dirección</label>
+                        <button type="button" class="gps-btn" id="gps-btn">
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <circle cx="12" cy="12" r="3"></circle>
@@ -102,17 +91,17 @@
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                             <circle cx="12" cy="10" r="3"></circle>
                         </svg>
-                        <input class="text-input" type="text" id="incident-location" name="direccion" placeholder="Ej: San Martín 1420 esq. Belgrano" required>
+                        <input class="text-input" type="text" id="incident-location" name="direccion" placeholder="Ej: San Martín 1420 esq. Belgrano" maxlength="255" required>
                     </div>
                 </div>
 
-                <!-- 3. Evidencia fotográfica -->
+                <!-- 3. Evidencia fotográfica (el back exige al menos una imagen) -->
                 <div class="form-step">
-                    <label class="step-label">3. EVIDENCIA FOTOGRÁFICA</label>
+                    <label class="step-label">3. EVIDENCIA FOTOGRÁFICA <span class="required-asterisk">*</span></label>
 
                     <!-- Zona de arrastre / Carga -->
-                    <div class="upload-dropzone">
-                        <input type="file" id="photo-evidence" name="evidencia-fotografica" accept="image/png, image/jpeg" multiple class="file-input-hidden">
+                    <div class="upload-dropzone" id="upload-dropzone">
+                        <input type="file" id="photo-evidence" name="images" accept="image/png, image/jpeg" multiple class="file-input-hidden">
                         <label for="photo-evidence" class="dropzone-trigger">
                             <div class="camera-icon-circle">
                                 <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
@@ -122,40 +111,30 @@
                             </div>
                             <div class="dropzone-text">
                                 <span class="dropzone-title">Adjuntar foto o arrastrar archivo</span>
-                                <span class="dropzone-subtitle">JPG o PNG hasta 10MB</span>
+                                <span class="dropzone-subtitle">JPG o PNG, hasta 3 MB en total</span>
                             </div>
                         </label>
                     </div>
 
-                    <!-- Vista previa del archivo cargado -->
-                    <div class="uploaded-file-preview">
-                        <img class="preview-thumbnail" src="/assets/img/camara.png" alt="Previsualización">
-                        <div class="file-info">
-                            <span class="file-name">evidencia_calle_bache.jpg</span>
-                            <span class="file-status">2.4 MB • Lista para envío</span>
-                        </div>
-                        <button type="button" class="remove-file-btn" aria-label="Eliminar archivo">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                        </button>
-                    </div>
+                    <!-- Vista previa de los archivos cargados (la genera report-incident.js) -->
+                    <div id="file-preview-list"></div>
                 </div>
 
-                <!-- 4. Detalles adicionales -->
+                <!-- 4. Descripción (el back la exige: @NotBlank) -->
                 <div class="form-step">
                     <div class="step-label-row">
-                        <label class="step-label" for="additional-details">4. DETALLES ADICIONALES <span class="optional-tag">(opcional)</span></label>
-                        <span class="char-counter">0/240</span>
+                        <label class="step-label" for="additional-details">4. DESCRIPCIÓN <span class="required-asterisk">*</span></label>
+                        <span class="char-counter" id="char-counter">0/240</span>
                     </div>
-                    <textarea class="textarea-input" id="additional-details" name="detalles" rows="3" maxlength="240" placeholder="Información breve de apoyo para la cuadrilla de resolución..."></textarea>
+                    <textarea class="textarea-input" id="additional-details" name="descripcion" rows="3" maxlength="240" placeholder="Describí brevemente el problema para la cuadrilla de resolución..." required></textarea>
                 </div>
+
+                <div class="form-message" id="report-message" role="alert" aria-live="polite" hidden></div>
 
                 <!-- Acciones del Formulario -->
                 <div class="form-actions">
-                    <a href="/index.html" class="btn-cancel">Cancelar</a>
-                    <button type="submit" class="btn-submit">
+                    <a href="../index.html" class="btn-cancel">Cancelar</a>
+                    <button type="submit" class="btn-submit" id="report-submit">
                         Enviar Reporte
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -180,8 +159,10 @@
 
     <footer></footer>
 
-    <script src="/js/header.js"></script> 
-    <script src="/js/session-ui.js"></script>
+    <script src="../js/header.js"></script> 
+    <script src="../js/session-ui.js"></script>
+    <script src="../js/ubicaciones.js"></script>
+    <script src="../js/report-incident.js"></script>
 
 </body>
 

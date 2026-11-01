@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notificaciones - Reporte Ciudadano</title>
-    <link rel="stylesheet" href="/assets/css/notifications.css">
-    <link rel="stylesheet" href="/assets/css/session-ui.css">
+    <link rel="stylesheet" href="../assets/css/notifications.css">
+    <link rel="stylesheet" href="../assets/css/session-ui.css">
+    <!-- Sesión con JWT: si no hay token vigente redirige a login.html -->
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/guard.js"></script>
 </head>
 
 <body>
@@ -19,9 +23,9 @@
         <!-- Miga de pan / Breadcrumb -->
         <nav class="breadcrumb-container" id="breadcrumb-nav">
             <p class="breadcrumb-path">
-                <a class="breadcrumb-link" href="/index.html">Panel Principal</a> / Centro de Notificaciones y Alertas
+                <a class="breadcrumb-link" href="../index.html">Panel Principal</a> / Centro de Notificaciones y Alertas
             </p>
-            <a class="back-link" href="/index.html">
+            <a class="back-link" href="../index.html">
                 ← Volver al Panel Principal
             </a>
         </nav>
@@ -55,7 +59,7 @@
                 <article class="incident-card">
                     <div class="card-media">
                         <span class="incident-id-badge">#REP-84920</span>
-                        <img class="incident-image" src="/assets/img/camara.png" alt="Cables y postes caídos">
+                        <img class="incident-image" src="../assets/img/camara.png" alt="Cables y postes caídos">
                     </div>
 
                     <div class="card-body">
@@ -97,7 +101,7 @@
                 <article class="incident-card">
                     <div class="card-media">
                         <span class="incident-id-badge">#REP-84512</span>
-                        <img class="incident-image" src="/assets/img/camara.png" alt="Bache reparado">
+                        <img class="incident-image" src="../assets/img/camara.png" alt="Bache reparado">
                     </div>
 
                     <div class="card-body">
@@ -139,7 +143,7 @@
                 <article class="incident-card">
                     <div class="card-media">
                         <span class="incident-id-badge">#REP-83901</span>
-                        <img class="incident-image" src="/assets/img/camara.png" alt="Saneamiento municipal">
+                        <img class="incident-image" src="../assets/img/camara.png" alt="Saneamiento municipal">
                     </div>
 
                     <div class="card-body">
@@ -186,8 +190,8 @@
 
     <footer></footer>
 
-    <script src="/js/header.js"></script>
-    <script src="/js/session-ui.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/session-ui.js"></script>
 
 </body>
 

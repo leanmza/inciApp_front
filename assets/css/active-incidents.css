@@ -258,6 +258,27 @@
 }
 
 /*  ==========================================================================
+                        Mensajes de lista vacía / error
+    ========================================================================== */
+.reports-empty {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: var(--fs-body);
+    padding: 2rem 1rem;
+    margin: 0;
+}
+
+.reports-message {
+    background-color: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    border-radius: 0.6rem;
+    padding: 0.75rem 1rem;
+    font-size: var(--fs-body);
+    margin: 0 0 1rem 0;
+}
+
+/*  ==========================================================================
                                 MEDIA QUERIES
     ========================================================================== */
 

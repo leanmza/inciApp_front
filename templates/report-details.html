@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles del Reporte - Reporte Ciudadano</title>
-    <link rel="stylesheet" href="/assets/css/report-details.css">
-    <link rel="stylesheet" href="/assets/css/session-ui.css">
+    <link rel="stylesheet" href="../assets/css/report-details.css">
+    <link rel="stylesheet" href="../assets/css/session-ui.css">
+    <!-- Sesión con JWT: si no hay token vigente redirige a login.html -->
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/guard.js"></script>
 </head>
 
 <body class="details-page">
@@ -23,19 +27,22 @@
             </a>
         </nav>
 
-        <!-- Tarjeta Contenedora Principal -->
-        <article class="details-card">
+        <!-- Mensaje de carga / error -->
+        <p id="details-message" class="details-message" role="alert">Cargando el reporte...</p>
+
+        <!-- Tarjeta Contenedora Principal (la completa js/report-details.js desde /api/incidentes/{id}) -->
+        <article class="details-card" id="details-card" hidden>
 
             <!-- Cabecera del Reporte -->
             <section class="details-card-header">
                 <div class="header-left-meta">
                     <div class="badges-row">
-                        <span class="incident-id-badge">#REP-84920</span>
-                        <span class="category-text">INFRAESTRUCTURA VIAL</span>
-                        <span class="status-pill status-pill-gestional">• En gestión</span>
+                        <span class="incident-id-badge" id="detail-id"></span>
+                        <span class="category-text" id="detail-tipo"></span>
+                        <span class="status-pill" id="detail-estado"></span>
                     </div>
 
-                    <h1 class="report-main-heading">Tapas de alcantarilla rotas</h1>
+                    <h1 class="report-main-heading" id="detail-titulo"></h1>
 
                     <div class="timestamps-row">
                         <span class="timestamp-item">
@@ -43,34 +50,9 @@
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
-                            Reportado hoy a las 09:15 hs
-                        </span>
-                        <span class="meta-dot">•</span>
-                        <span class="timestamp-item">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                            Respuesta estimada: 24 a 48 hs
+                            <time id="detail-fecha"></time>
                         </span>
                     </div>
-                </div>
-
-                <div class="header-actions">
-                    <button type="button" class="btn-edit-action">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
-                        Editar reporte
-                    </button>
-                    <button type="button" class="btn-download-action" aria-label="Descargar reporte">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                    </button>
                 </div>
             </section>
 
@@ -78,20 +60,19 @@
             <section class="info-grid-container">
                 <div class="info-card-block">
                     <span class="block-label">UBICACIÓN</span>
-                    <strong class="block-title">Calle Belgrano 120</strong>
-                    <span class="block-subtitle">Barrio Centro</span>
+                    <strong class="block-title" id="detail-direccion"></strong>
+                    <span class="block-subtitle" id="detail-zona"></span>
                 </div>
 
                 <div class="info-card-block">
-                    <span class="block-label">CUADRILLA ASIGNADA</span>
-                    <strong class="block-title">Viales Noroeste (Móvil 04)</strong>
-                    <span class="block-subtitle">Capataz R. Domínguez</span>
+                    <span class="block-label">PRIORIDAD</span>
+                    <strong class="block-title" id="detail-prioridad"></strong>
                 </div>
 
                 <div class="info-card-block">
-                    <span class="block-label">VALIDACIÓN CIUDADANA</span>
-                    <strong class="block-title">8 vecinos confirmaron</strong>
-                    <button type="button" class="confirm-link-btn">+ Confirmar reclamo</button>
+                    <span class="block-label">REPORTADO POR</span>
+                    <strong class="block-title" id="detail-usuario"></strong>
+                    <span class="block-subtitle" id="detail-usuario-email"></span>
                 </div>
             </section>
 
@@ -99,17 +80,16 @@
             <section class="evidence-section">
                 <h2 class="section-block-title">EVIDENCIA FOTOGRÁFICA</h2>
                 <div class="photo-container">
-                    <img class="evidence-photo" src="/assets/img/camara.png" alt="Evidencia de tapas de alcantarilla rotas">
-                    <span class="photo-location-overlay">Belgrano 120 • 09:15 hs</span>
+                    <img class="evidence-photo" id="detail-foto" src="../assets/img/camara.png" alt="">
+                    <span class="photo-location-overlay" id="detail-foto-overlay"></span>
                 </div>
+                <div class="photo-thumbs" id="detail-miniaturas" hidden></div>
             </section>
 
             <!-- Sección de Descripción -->
             <section class="description-section">
                 <h2 class="section-block-title">DESCRIPCIÓN</h2>
-                <blockquote class="description-quote">
-                    “Tapa de sumidero pluvial rota y desplazada en el cruce peatonal de Calle Belgrano 120, genera peligro inminente de caída para peatones y daños a neumáticos vehiculares. Se requiere reposición de reja de hierro fundido estándar de 60x40 cm.”
-                </blockquote>
+                <blockquote class="description-quote" id="detail-descripcion"></blockquote>
             </section>
 
         </article>
@@ -118,8 +98,9 @@
 
     <footer></footer>
 
-    <script src="/js/header.js"></script>
-    <script src="/js/session-ui.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/session-ui.js"></script>
+    <script src="../js/report-details.js"></script>
 
 </body>
 
