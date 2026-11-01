@@ -21,6 +21,9 @@ Ya **no usa Node**: se eliminó `server.js`, `package.json`, `node_modules` y `.
   Si el back responde 401 (token vencido, dura 30 min) borra el token y manda al login.
 - `js/guard.js` va en el `<head>` de las páginas privadas: sin token vigente redirige a
   `templates/login.html?next=<página>` y después del login vuelve a esa página.
+- Páginas públicas (sin `guard.js`): `index.html`, `templates/login.html` y
+  `templates/active-incidents.html`. Esta última pide `GET /api/incidentes` sin token,
+  así que el back tiene que permitir ese endpoint sin JWT.
 - `js/header.js` muestra/oculta las opciones del menú con `data-auth="user"` / `data-auth="guest"`.
 - Cerrar sesión = borrar el token (`Auth.logout()`).
 
