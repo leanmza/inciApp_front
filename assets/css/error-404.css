@@ -1,0 +1,165 @@
+@import url('styles.css');
+
+/*  ==========================================================================
+                            VARIABLES (:root)
+    ========================================================================== */
+:root {
+    --fs-hero-title: 1.75rem;
+    --fs-hero-subtitle: 0.95rem;
+    --fs-card-title: 1.15rem;
+    --fs-card-desc: 0.9rem;
+    --fs-body: 0.875rem;
+    --fs-small: 0.8rem;
+    --fs-btn: 0.875rem;
+
+    --primary-color: #1e3a8a;
+    --secondary-color: #0891b2;
+    --tertiary-color: #d97706;
+    --neutral-color: #0f172a;
+    --background-color: #f8fafc;
+    --text-color: #ffffff;
+    --error-color: #ff4d4d;
+
+    --severity-high-bg: #dc2626;
+    --severity-medium-bg: #ea580c;
+    --severity-low-bg: #0284c7;
+
+    --status-active-bg: #e2e8f0;
+    --status-active-text: #334155;
+    --status-progress-bg: #f97316;
+
+    --card-bg: #ffffff;
+    --card-border: #e2e8f0;
+    --text-muted: #64748b;
+    --success-color: #16a34a;
+}
+
+
+/*  ==========================================================================
+                            TAMAÑOS DE FUENTE
+    ========================================================================== */
+.error-code {
+    font-size: 7.5rem;
+}
+
+.error-title {
+    font-size: 2rem;
+}
+
+.error-description {
+    font-size: 1.05rem;
+}
+
+.btn-primary-home {
+    font-size: var(--fs-btn);
+}
+
+.report-link {
+    font-size: 0.9rem;
+}
+
+
+/*  ==========================================================================
+                            CONTENEDOR PRINCIPAL
+    ========================================================================== */
+.error-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--background-color);
+}
+
+.error-main-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+.error-content-card {
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+/*  ==========================================================================
+                            ESTILOS DE TEXTOS Y BOTONES
+    ========================================================================== */
+.error-code {
+    font-weight: 900;
+    color: #e2e8f0;
+    line-height: 1;
+    margin: 0;
+    user-select: none;
+}
+
+.error-title {
+    font-weight: 800;
+    color: var(--neutral-color);
+    margin: 0.5rem 0 0.75rem 0;
+}
+
+.error-description {
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0 0 2rem 0;
+}
+
+.error-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    width: 100%;
+}
+
+.btn-primary-home {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem 1.75rem;
+    border-radius: 0.5rem;
+    background-color: var(--primary-color);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary-home:hover {
+    background-color: #1e40af;
+}
+
+.report-link {
+    color: var(--neutral-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.report-link:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/*  ==========================================================================
+                                MEDIA QUERIES
+   ========================================================================== */
+@media (max-width: 480px) {
+    .error-code {
+        font-size: 5.5rem;
+    }
+
+    .error-title {
+        font-size: 1.6rem;
+    }
+
+    .btn-primary-home {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
